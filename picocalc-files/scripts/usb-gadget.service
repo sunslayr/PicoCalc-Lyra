@@ -1,0 +1,12 @@
+[Unit]
+Description=Initializing USB CDC ECM RNDIS and Serial Interface
+#Requires=sys-module-configfs.device
+#After=sys-module-configfs.device
+
+[Service]
+Type=oneshot
+ExecStart=/usr/local/bin/usb-gadget
+
+[Install]
+
+WantedBy=multi-user.target
