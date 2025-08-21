@@ -4,4 +4,5 @@ hisptoot-drivers/
 debootstrap/
 picocalc-install/
 boot/
-target-rootfs/
+rootfs/
+picocalc-sd-*.img
