@@ -46,7 +46,9 @@ int main() {
     }
 
     // Read firmware version of PicoCalc keyboard so we know the lyra is installed.
-    i2c_read(file, 0x01);
+    if (i2c_read(file, 0x01) < 0) {
+        return 1;
+    }
 
     // Close the I2C device
     close(file);

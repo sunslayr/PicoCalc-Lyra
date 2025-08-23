@@ -6,6 +6,7 @@ This is a guide on creating a generic Ubuntu image that can be used with the Luc
 - Modified U-Boot to allow changing the kernel boot string with config file (boot.txt).
 - Modified U-Boot to allow loading initramfs on boot.
 - 1GB Swap partition to prevent the system from closing applications (only 128mb RAM, I reccomend using an industrial/high endurance card)
+- Supports PicoCalc SD card slot.
 - Creates a usb gadget enabling easy terminal access via serial over usb.
 - Usb gadget also allows internet sharing over USB.
 - Small systemd service to control kernel module loading to avoid log spam from keyboard driver etc.
@@ -52,9 +53,11 @@ You will need a functioning ubuntu image to create your own custom image unless 
 	git clone https://github.com/hisptoot/picocalc_luckfox_lyra.git hisptoot-drivers
 7. Insert our modified device tree and defconfigs:
 	```
-	cp -v picocalc-files/source/*.dts* lyra-sdk/kernel-6.1/arch/arm/boot/dts/ && \
-	cp -v picocalc-files/defconfig/luckfox_lyra_ubuntu_picocalc_defconfig lyra-sdk/device/rockchip/.chips/rk3506/
-	cp -v picocalc-files/defconfig/rk3506-configfs-gadget.config lyra-sdk/kernel-6.1/arch/arm/configs/
+	cp -v picocalc-files/source/kernel-devicetree/* lyra-sdk/kernel-6.1/arch/arm/boot/dts/ && \
+	cp -v picocalc-files/source/uboot-devicetree/* lyra-sdk/u-boot/arch/arm/dts/ && \
+	cp -v picocalc-files/source/defconfig/luckfox_lyra_ubuntu_picocalc_defconfig lyra-sdk/device/rockchip/.chips/rk3506/ && \
+	cp -v picocalc-files/source/defconfig/rk3506-configfs-gadget.config lyra-sdk/kernel-6.1/arch/arm/configs/ && \
+	cp -v picocalc-files/source/defconfig/rk3506_picocalc_uboot_defconfig lyra-sdk/u-boot/configs/
 8. Modify the U-Boot bootloader:
 	```
 	cp -v picocalc-files/source/rk3506_common.h lyra-sdk/u-boot/include/configs/rk3506_common.h
@@ -84,9 +87,9 @@ You will need a functioning ubuntu image to create your own custom image unless 
 	cp -r lyra-sdk/kernel-6.1/usr/include debootstrap/usr; \
 	cp -r lyra-sdk/kernel-6.1/tar-install/lib/ debootstrap/; \
 	mkdir -p debootstrap/etc/systemd/system; \
-	cp picocalc-files/scripts/*.service debootstrap/etc/systemd/system; \
+	cp picocalc-files/source/scripts/*.service debootstrap/etc/systemd/system; \
 	mkdir -p debootstrap/usr/local/bin; \
-	cp picocalc-files/scripts/usb-gadget picocalc-files/source/picocalc-check debootstrap/usr/local/bin/; \
+	cp picocalc-files/source/scripts/usb-gadget picocalc-files/source/picocalc-check debootstrap/usr/local/bin/; \
 	mkdir -p debootstrap/lib/modules/6.1.99/kernel/drivers/misc/picocalc; \
 	cp hisptoot-drivers/buildroot/board/rockchip/rk3506/picocalc-overlay/usr/lib/ili9488_fb.ko \
 	hisptoot-drivers/buildroot/board/rockchip/rk3506/picocalc-overlay/usr/lib/picocalc_kbd.ko \
@@ -94,7 +97,7 @@ You will need a functioning ubuntu image to create your own custom image unless 
 	hisptoot-drivers/buildroot/board/rockchip/rk3506/picocalc-overlay/usr/lib/picocalc_snd_softpwm.ko \
 	debootstrap/lib/modules/6.1.99/kernel/drivers/misc/picocalc; \
 	mkdir -p debootstrap/etc/modprobe.d ; \
-	cp picocalc-files/scripts/blacklist-picocalc.conf debootstrap/etc/modprobe.d
+	cp picocalc-files/source/scripts/blacklist-picocalc.conf debootstrap/etc/modprobe.d
 15. Copy the root files to the SD card to the blank ubuntu image rootfs partition. Update SDCARDPATH to the path of the mounted SD card.
 	```
 	SDCARDPATH="/run/media/user/613d6d25-d9f6-491c-9b4a-47e08885c2e9/"; # example \
