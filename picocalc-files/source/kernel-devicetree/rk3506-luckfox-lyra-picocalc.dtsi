@@ -317,6 +317,7 @@
 	assigned-clock-rates = <100000000>;
 };
 
+
 /**********pinctrl**********/
 &pinctrl {
 	ili9488 {

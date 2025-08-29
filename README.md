@@ -104,12 +104,14 @@ You will need a functioning ubuntu image to create your own custom image unless 
 	sudo mkdir -p $SDCARDPATH/home/root && \
 	sudo cp -r debootstrap $SDCARDPATH/home/root && sudo sync
 16. Insert sd card into Lyra and plug in usb. A serial port and cdc ethernet device should appear. Using a serial terminal app such as screen or GTKTerm log into the lyra with the username and password root with a baudrate of 115200.
-17. Share your internet with the newly added cdc ethernet device. On KDE Plasma I would right click the network taskbar icon and configure network connections. Disconnect the newly added connection if there is one trying to connect. Create a new shared ethernet connection. Ristrict to the interface with the mac 48:6F:73:74:50:43. Save and then connect the new connection. On Windows simply check the "share this connection" box in the advanced settings of your internet connection.
+17. Share your internet with the newly added cdc ethernet device. On KDE Plasma I would right click the network taskbar icon and configure network connections. Disconnect the newly added connection if there is one trying to connect. Create a new shared ethernet connection. Ristrict to the interface with the mac 48:6F:73:74:50:43. Save and then connect the new connection. On Windows simply check the "share this connection" box in the advanced settings of your internet connection. To make things easier you can assign an ip by creating a config file for NetworkManager:
+	```
+	echo "dhcp-host=42:61:64:55:53:42,10.42.0.10" | sudo tee -a /etc/NetworkManager/dnsmasq-shared.d/lyra.config
 18. Wait a few seconds, then on the PicoCalc enter:
 	```
 	ip address
 19. If either usb0 or usb1 has a valid ip address you are good to go. It might take 10s to get an ip.
-20. I recommend you open a ssh connection to this ip (e.g ssh root@10.42.0.123) to enter the rest of the commands, otherwise continue entering over serial.
+20. I recommend you open a ssh connection to this ip (e.g ssh root@10.42.0.10) to enter the rest of the commands, otherwise continue entering over serial.
 21. Run the debootstrap script:
 	```
 	debootstrap jammy /home/root/debootstrap
