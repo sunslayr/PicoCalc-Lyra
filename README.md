@@ -42,7 +42,7 @@ You will need a functioning ubuntu image to create your own custom image unless 
 	mkdir lyra-sdk && tar -xvzf Luckfox_Lyra_SDK_*.tar.gz -C ./lyra-sdk
 4. Create a docker container and open a shell:
 	```
-	docker build --rm -f picocalc-build.dockerfile -t lyra:picocalc-build .&& \
+	docker build --rm -f picocalc-ubuntu.dockerfile -t lyra:picocalc-build .&& \
 	docker run --rm -it -v $PWD:/build -w /build --user $(id -u):$(id -g) lyra:picocalc-build
 5. Modify the SDK to use the correct python version and unpack it:
 	```
@@ -58,9 +58,11 @@ You will need a functioning ubuntu image to create your own custom image unless 
 	cp -v picocalc-files/source/defconfig/luckfox_lyra_ubuntu_picocalc_defconfig lyra-sdk/device/rockchip/.chips/rk3506/ && \
 	cp -v picocalc-files/source/defconfig/rk3506-configfs-gadget.config lyra-sdk/kernel-6.1/arch/arm/configs/ && \
 	cp -v picocalc-files/source/defconfig/rk3506_picocalc_uboot_defconfig lyra-sdk/u-boot/configs/
-8. Modify the U-Boot bootloader:
+8. Modify the U-Boot bootloader and set the uart to 115200 baud:
 	```
-	cp -v picocalc-files/source/rk3506_common.h lyra-sdk/u-boot/include/configs/rk3506_common.h
+	cp -v picocalc-files/source/rk3506_common.h lyra-sdk/u-boot/include/configs/rk3506_common.h ; \
+	cp -v picocalc-files/source/rk3506_ddr/rk3506_ddr_750MHz_v1.04_uart.bin lyra-sdk/rkbin/bin/rk35; \
+	cp -v picocalc-files/source/rk3506_ddr/RK3506MINIALL.ini lyra-sdk/rkbin/RKBOOT
 9. Configure the build script:
 	```
 	./lyra-sdk/build.sh lunch

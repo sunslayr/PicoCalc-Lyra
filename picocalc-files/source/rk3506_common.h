@@ -84,7 +84,10 @@
 	"boot_fit;"
 #else
 #define RKIMG_BOOTCOMMAND		\
-	"mmc dev 0;load mmc 0:1 0x2600000 boot.txt;env import -t 0x2600000 ${filesize};if \"${?}\" == 0;then load mmc 0:1 $fdt_addr_r $devicetree;load mmc 0:1 $kernel_addr_r $kernel;if test \"${initramfs}\" != \"\";then load mmc 0:1 0x01800000 $initramfs && bootz $kernel_addr_r 0x01800000:$filesize $fdt_addr_r; else bootz $kernel_addr_r - $fdt_addr_r;fi;else boot_fit;boot_android ${devtype} ${devnum};fi"
+	"mmc dev 0; \
+	load mmc 0:1 0x2600000 boot.txt; \
+	env import -t 0x2600000 ${filesize}; \
+	run boot_cfg_cmd"
 #endif
 
 #endif
