@@ -19,6 +19,6 @@ RUN \
 RUN apt update && apt install -y git ssh make gcc libssl-dev \
     liblz4-tool expect expect-dev g++ patchelf chrpath gawk texinfo chrpath \
     diffstat binfmt-support qemu-user-static live-build bison flex fakeroot \
-    cmake gcc-multilib g++-multilib unzip device-tree-compiler ncurses-dev \
+    cmake unzip device-tree-compiler ncurses-dev libelf-dev\
     libgucharmap-2-90-dev bzip2 expat gpgv2 cpp-aarch64-linux-gnu libgmp-dev \
-    libmpc-dev bc python-is-python3 python2 rsync
+    gcc-arm-linux-gnueabihf libmpc-dev bc python-is-python3 python2 rsync
