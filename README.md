@@ -159,7 +159,7 @@ apt update && apt upgrade -y
 ```
 25. Install some packages. Feel free to add your own.
 ```
-apt install vim nano network-manager tmux openssh-server usbutils sshfs debootstrap -y
+apt install vim nano network-manager tmux openssh-server usbutils sshfs debootstrap parted -y
 ```
 26. Enable write access on root partition and enable swap:
 ```
@@ -289,8 +289,7 @@ mkpart rootfs 1537MiB 100%
 sudo losetup -fP picocalc-sd-${TIMESTAMP}.img && \
 sudo mkfs.vfat -F 32 /dev/loop0p1 && \
 sudo mkswap /dev/loop0p2 && \
-sudo mkfs.ext4 /dev/loop0p3 && \
-sudo tune2fs -c 0 -i 0 /dev/loop0p3
+sudo mkfs.ext4 -O ^FEATURE_C12,^metadata_csum_seed /dev/loop0p3 
 ```
 3. Copy the data:
 ```
@@ -304,4 +303,9 @@ sudo umount boot rootfs && sudo rm -d boot rootfs && \
 sudo losetup -d /dev/loop0
 ```
 4. Now you can flash to an SD card with a tool like balena etcher.
-5. Expand partition using "parted" and expand filesystem with resize2fs.
+5. Boot the card and expand partition:
+```
+printf "fix\n3\n" | parted ---pretend-input-tty /dev/mmcblk0 resizepart 3 100%; \
+resize2fs /dev/mmcblk0p3
+```
+
