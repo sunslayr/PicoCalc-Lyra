@@ -12,7 +12,15 @@ This is a guide on creating a generic Ubuntu image that can be used with the Luc
 - Small systemd service to control kernel module loading to avoid log spam from keyboard driver etc.
 - Changed UART Baud to 115200 in both uboot and linux
 - Enabled device tree overlays
+- Access Lyra SD card over usb by bridging GP2 to 3v3 on boot
+- Access Lyra Flashing mode by bridging GP3 to 3v3 on boot
 - No custom LuckFox boot message :)
+
+## To enter Mass Storage Mode or Download (firmware flashing) Mode
+
+Bridge the GPIO headers with a breadboard jumper wire. 3v3 is the header closest to the volume wheel and GP2 is next to that and GP3 is the third along:
+
+![Diagram showing the gpio headers to bridge](./diagram-jumper.png)
 
 # Flashing instructions
 
@@ -66,7 +74,9 @@ cp -v source/defconfig/rk3506g_luckfox_lyra_picocalc_defconfig lyra-sdk/kernel-6
 ```
 8. Modify the U-Boot bootloader and set the uart to 115200 baud:
 ```
-cp -v source/rk3506_common.h lyra-sdk/u-boot/include/configs/rk3506_common.h ; \
+cp -v source/uboot/rk3506_common.h lyra-sdk/u-boot/include/configs/; \
+cp -v source/uboot/rk3506_luckfox_defconfig lyra-sdk/u-boot/configs/; \
+cp -v source/uboot/cmd/* lyra-sdk/u-boot/cmd/; \
 cp -v source/rk3506_ddr/rk3506_ddr_750MHz_v1.04_uart.bin lyra-sdk/rkbin/bin/rk35; \
 cp -v source/rk3506_ddr/RK3506MINIALL.ini lyra-sdk/rkbin/RKBOOT
 ```

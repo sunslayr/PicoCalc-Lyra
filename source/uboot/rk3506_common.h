@@ -87,6 +87,13 @@
 	"mmc dev 0; \
 	load mmc 0:1 0x2600000 boot.txt; \
 	env import -t 0x2600000 ${filesize}; \
+	gpio read ums_jumper gpio012; \
+	gpio read download_jumper gpio013; \
+	if test $ignore_jumpers != false; then \
+		if test $ums_jumper = 1; then echo \"USB Mass storage ENABLED\"; ums 0 mmc 0;fi; \
+		if test $download_jumper = 1; then echo \"Entering RK download mode\"; download;fi; \
+	fi; \
+	env import -t 0x2600000 ${filesize}; \
 	run boot_cfg_cmd"
 #endif
 
