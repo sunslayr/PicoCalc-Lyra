@@ -94,7 +94,7 @@
 		if test $ums_jumper = 1; then echo \"USB Mass storage ENABLED\"; ums 0 mmc 0;fi; \
 		if test $download_jumper = 1; then echo \"Entering RK download mode\"; download;fi; \
 	fi; \
-	if test $boot_ums = true; then echo \"USB Mass storage ENABLED\"; ums 0 mmc 0;fi; \
+	if test -n $boot_ums; then if test $boot_ums = true;then echo \"USB Mass storage ENABLED\";fi;fi;\
 	env import -t 0x2600000 ${filesize}; \
 	run boot_cfg_cmd"
 #endif
