@@ -89,10 +89,12 @@
 	env import -t 0x2600000 ${filesize}; \
 	gpio read ums_jumper gpio012; \
 	gpio read download_jumper gpio013; \
-	if test $ignore_jumpers != false; then \
+	echo \"ignore_jumpers flag is \" $ignore_jumpers; \
+	if test $ignore_jumpers != true; then \
 		if test $ums_jumper = 1; then echo \"USB Mass storage ENABLED\"; ums 0 mmc 0;fi; \
 		if test $download_jumper = 1; then echo \"Entering RK download mode\"; download;fi; \
 	fi; \
+	if test $boot_ums = true; then echo \"USB Mass storage ENABLED\"; ums 0 mmc 0;fi; \
 	env import -t 0x2600000 ${filesize}; \
 	run boot_cfg_cmd"
 #endif

@@ -1,0 +1,20 @@
+kernel=zImage
+initramfs=
+devicetree=rk3506g-luckfox-lyra-picocalc.dtb
+bootargs=earlycon=uart8250,mmio32,0xff0a0000 console=tty1 console=tty2 console=ttyFIQ0 fbcon=font:VGA8x8 storagemedia=sd root=/dev/mmcblk0p3 rootfstype=ext4 rootwait snd_aloop.index=7 snd_aloop.use_raw_jiffies=1 modules_load=libcomposite
+
+boot_ums=false
+ignore_jumpers=false
+
+boot_cfg_cmd=   run boot_no_init
+
+boot_no_init=   load mmc 0:1 $fdt_addr_r $devicetree; \
+                load mmc 0:1 $kernel_addr_r $kernel; \
+                bootz $kernel_addr_r - $fdt_addr_r; \
+
+boot_init=      load mmc 0:1 $fdt_addr_r $devicetree; \
+                load mmc 0:1 $kernel_addr_r $kernel; \
+                load mmc 0:1 0x01800000 $initramfs; \
+                bootz $kernel_addr_r 0x01800000:$filesize $fdt_addr_r;
+
+boot_andr_fit=  boot_fit;boot_android ${devtype} ${devnum};

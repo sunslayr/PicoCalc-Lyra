@@ -14,6 +14,8 @@ This is a guide on creating a generic Ubuntu image that can be used with the Luc
 - Enabled device tree overlays
 - Access Lyra SD card over usb by bridging GP2 to 3v3 on boot
 - Access Lyra Flashing mode by bridging GP3 to 3v3 on boot
+	- set ignore_jumpers=true in boot.txt to disable this
+- Alternativly set boot_ums=true in boot.txt to enable mass storage mode
 - No custom LuckFox boot message :)
 
 ## To enter Mass Storage Mode or Download (firmware flashing) Mode
@@ -176,6 +178,7 @@ apt install vim nano network-manager tmux openssh-server usbutils sshfs debootst
 cat <<EOF >> /etc/fstab
 /dev/mmcblk0p3 / ext4 rw,relatime 0 0
 /dev/mmcblk0p2 none swap sw 0 0
+/dev/mmcblk0p1 /boot vfat rw,relatime 0 0
 EOF
 ```
 27. Setup DHCP on ethernet gadget. Feel free to set a static IP if you know what address to set.
@@ -245,7 +248,7 @@ sudo tune2fs -c 0 -i 0 ${SDCDEVICE}3
 sudo mount --mkdir -o loop ${SDCDEVICE}1 boot && \
 sudo cp -v lyra-sdk/kernel-6.1/arch/arm/boot/zImage \
 lyra-sdk/kernel-6.1/arch/arm/boot/dts/rk3506g-luckfox-lyra-picocalc.dtb \
-picocalc-files/bootdir/boot.txt boot && \
+picocalc-files/source/boot.txt boot && \
 sudo umount boot && sudo rm -d boot
 ```
 36. a) Mount the root partition and copy files:
@@ -261,7 +264,7 @@ sudo mount --mkdir -o loop ${SDCDEVICE}1 boot && \
 sudo mount --mkdir -o loop ${SDCDEVICE}3 rootfs && \
 sudo rm -r rootfs/* boot/* && /
 sudo rsync -avhP picocalc-install/ rootfs/ && 
-sudo cp -rv bootdir/* \
+sudo cp -v source/boot.txt \
 lyra-sdk/kernel-6.1/arch/arm/boot/zImage \
 lyra-sdk/kernel-6.1/arch/arm/boot/dts/rk3506g-luckfox-lyra-picocalc.dtb \
 boot/ && sudo sync && \
@@ -307,7 +310,7 @@ sudo mount --mkdir -o loop /dev/loop0p1 boot && \
 sudo mount --mkdir -o loop /dev/loop0p3 rootfs && \
 sudo cp -v lyra-sdk/kernel-6.1/arch/arm/boot/zImage \
 lyra-sdk/kernel-6.1/arch/arm/boot/dts/rk3506g-luckfox-lyra-picocalc.dtb \
-bootdir/boot.txt boot && \
+source/boot.txt boot && \
 sudo rsync -avhP picocalc-install/ rootfs/ && sudo sync && \
 sudo umount boot rootfs && sudo rm -d boot rootfs && \
 sudo losetup -d /dev/loop0
